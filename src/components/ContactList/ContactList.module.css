@@ -1,0 +1,9 @@
+.container {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.container li {
+    width: calc(100% / 6);
+}

@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  align-items: flex-start;
+  border: 1px solid;
+  padding: 16px;
+  gap: 16px;
+}
+
+.button {
+  align-self: center;
+}
+
+.error {
+  color: red;
+}
