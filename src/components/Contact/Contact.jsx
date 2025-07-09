@@ -1,29 +1,76 @@
-import { FaUser, FaPhone } from "react-icons/fa6";
+import { useState } from "react";
+
+import PhoneIcon from "@mui/icons-material/Phone";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Stack,
+  CardHeader,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
 
-import styles from "./Contact.module.css";
-import { deleteContact } from "../../redux/contactsOps";
+import { deleteContact, editContact } from "../../redux/contacts/operations";
+import DeleteContactConfirmModal from "../DeleteContactConfirmModal/DeleteContactConfirmModal";
+import EditContactModal from "../EditContactModal/EditContactModal";
 
-export default function Contact({ id, name, number }) {
+export default function UserCard(contact) {
+  const { name, number, id } = contact;
   const dispatch = useDispatch();
+
+  const [openModal, setOpenModal] = useState(null);
+
+  const handleClose = () => setOpenModal(null);
+
+  const onEditContact = (updatedContact) => {
+    dispatch(editContact(updatedContact));
+    handleClose();
+  };
+
+  const onDeleteContact = () => {
+    dispatch(deleteContact(id));
+    handleClose();
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.info}>
-        <p className={styles.record}>
-          <FaUser />
-          {name}
-        </p>
-        <p className={styles.record}>
-          <FaPhone />
+    <Card sx={{ width: 275, boxShadow: 4 }}>
+      <CardHeader
+        title={name}
+        sx={{
+          "& .MuiCardHeader-title": {
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          },
+          "& .MuiCardHeader-content": {
+            width: "100%",
+            textAlign: "start",
+          },
+        }}
+      />
+
+      <CardContent>
+        <Stack direction="row" alignItems="center" gap={1}>
+          <PhoneIcon />
           {number}
-        </p>
-      </div>
-      <button
-        className={styles.button}
-        onClick={() => dispatch(deleteContact(id))}
-      >
-        Delete
-      </button>
-    </div>
+        </Stack>
+      </CardContent>
+
+      <CardActions sx={{ justifyContent: "flex-end" }}>
+        <EditContactModal
+          open={openModal === "edit"}
+          handleOpen={() => setOpenModal("edit")}
+          handleClose={handleClose}
+          contact={contact}
+          onSubmit={onEditContact}
+        />
+        <DeleteContactConfirmModal
+          open={openModal === "delete"}
+          handleOpen={() => setOpenModal("delete")}
+          handleClose={handleClose}
+          onSubmit={onDeleteContact}
+        />
+      </CardActions>
+    </Card>
   );
 }

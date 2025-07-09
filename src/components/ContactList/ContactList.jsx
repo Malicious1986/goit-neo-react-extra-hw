@@ -1,10 +1,10 @@
+import { Grid, Box, CircularProgress, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 
-import styles from "./ContactList.module.css";
 import {
   selectFilteredContacts,
   selectLoading,
-} from "../../redux/contactsSlice";
+} from "../../redux/contacts/selectors";
 import Contact from "../Contact/Contact";
 
 export default function ContactList() {
@@ -13,14 +13,27 @@ export default function ContactList() {
 
   return (
     <>
-      <ul className={styles.container}>
+      {contacts.length === 0 && !isLoading && (
+        <Box mt={4} textAlign="center">
+          <Typography variant="body1" color="text.secondary">
+            No contacts found
+          </Typography>
+        </Box>
+      )}
+
+      <Grid container spacing={2} mt={2}>
         {contacts.map((contact) => (
-          <li key={contact.id}>
+          <Grid size={{xs: 12, sm: 6, md: 4, lg: 3}} key={contact.id}>
             <Contact {...contact} />
-          </li>
+          </Grid>
         ))}
-      </ul>
-      {isLoading && <div>Loading...</div>}
+      </Grid>
+
+      {isLoading && (
+        <Box mt={4} display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      )}
     </>
   );
 }

@@ -1,12 +1,8 @@
-import { useState } from "react";
-
-import { Modal, Button, Box, Typography, Stack } from "@mui/material";
+import { Button, Modal, Box, Typography, Stack } from "@mui/material";
 import { Formik, Form } from "formik";
-import { useDispatch } from "react-redux";
 import { object, string } from "yup";
 
 import { MODAL_STYLES } from "../../constants";
-import { addContact } from "../../redux/contacts/operations";
 import FormikTextField from "../FormikTextField";
 
 const contactSchema = object({
@@ -14,51 +10,48 @@ const contactSchema = object({
   number: string().min(3, "Too short").max(50, "Too long").required("Required"),
 });
 
-export default function ContactForm() {
-  const [open, setOpen] = useState(false);
-  const dispatch = useDispatch();
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const onSubmitHandler = (values, actions) => {
-    dispatch(addContact(values));
-    actions.resetForm();
+export default function EditContactModal({
+  handleOpen,
+  handleClose,
+  open,
+  contact,
+  onSubmit,
+}) {
+  const onSubmitHandler = (fields) => {
+    onSubmit({ ...fields, id: contact.id });
     handleClose();
   };
-
   return (
     <>
       <Button variant="contained" onClick={handleOpen}>
-        Add contact
+        Edit
       </Button>
       <Modal open={open} onClose={handleClose}>
         <Box sx={MODAL_STYLES}>
           <Typography variant="h6" mb={2}>
-            Add New Contact
+            Edit Contact
           </Typography>
           <Formik
-            initialValues={{ name: "", number: "" }}
-            validationSchema={contactSchema}
+            initialValues={{
+              name: contact.name,
+              number: contact.number,
+            }}
             onSubmit={onSubmitHandler}
+            validationSchema={contactSchema}
           >
             {({ isValid, dirty }) => (
               <Form>
                 <Stack gap={1}>
-                  <FormikTextField name="name" label="Name" />
-                  <FormikTextField name="number" label="Number" />
-                </Stack>
-
-                <Box mt={2} display="flex" justifyContent="flex-end">
+                  <FormikTextField name="name" label={"Name"} />
+                  <FormikTextField name="number" label={"Number"} />
                   <Button
-                    type="submit"
                     variant="contained"
-                    color="primary"
+                    type="submit"
                     disabled={!isValid || !dirty}
                   >
-                    Add Contact
+                    Done
                   </Button>
-                </Box>
+                </Stack>
               </Form>
             )}
           </Formik>

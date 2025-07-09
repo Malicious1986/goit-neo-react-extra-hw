@@ -1,27 +1,23 @@
 import { useEffect } from "react";
 
-import "./App.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import ContactForm from "./ContactForm/ContactForm";
-import ContactList from "./ContactList/ContactList";
-import SearchBox from "./SearchBox/SearchBox";
-import { fetchContacts } from "../redux/contactsOps";
+import GlobalAlert from "./GlobalAlert";
+import Layout from "./Layout/Layout";
+import { refreshUser } from "../redux/auth/operations";
+import { selectIsRefreshing } from "../redux/auth/selectors";
 
 function App() {
   const dispatch = useDispatch();
-
+  const isRefreshing = useSelector(selectIsRefreshing);
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUser());
   }, [dispatch]);
-
   return (
-    <div>
-      <h1>Phonebook</h1>
-      <ContactForm />
-      <SearchBox />
-      <ContactList />
-    </div>
+    <>
+      {isRefreshing ? <div>Refreshing user...</div> : <Layout />}
+      <GlobalAlert />
+    </>
   );
 }
 
