@@ -9,11 +9,17 @@ export default function Navigation() {
   return (
     <Box sx={{ flexGrow: 1, display: "flex", gap: 2 }}>
       <Link component={NavLink} to="/" sx={{ color: "white" }}>
-        Home
+        {({ isActive }) => (
+          <span style={{ fontWeight: isActive ? "bold" : "normal" }}>Home</span>
+        )}
       </Link>
       {isLoggedIn ? (
         <Link component={NavLink} to="/contacts" sx={{ color: "white" }}>
-          Contacts
+          {({ isActive }) => (
+            <span style={{ fontWeight: isActive ? "bold" : "normal" }}>
+              Contacts
+            </span>
+          )}
         </Link>
       ) : null}
     </Box>
